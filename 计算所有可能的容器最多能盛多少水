@@ -1,0 +1,202 @@
+#include <stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<ctime>
+#include<iostream>
+using namespace std;
+double fayi(int n,int a[]);
+double faer(int n,int a[]);
+int a[10000000]={0};
+int main()
+{
+    int idx;
+    while(1)
+    {
+        system("cls");
+        printf("\t\t\t\t******欢迎进入容器盛水问题处理系统******\n");
+        printf("\t\t\t\t请您选择以下操作:\n");
+        printf("\t\t\t\t\t0.退出系统\n");
+        printf("\t\t\t\t\t1.容器盛水最多问题讲解\n");
+        printf("\t\t\t\t\t2.计算容器最多盛水量\n") ;
+        printf("\t\t\t\t\t3.两种方法运行时间比较\n") ;
+        printf("\t\t\t请输入:");
+        scanf("%d",&idx);
+        system("cls");
+        if(idx==0)
+        {
+            printf("\n\t\t\t\t******感谢您的使用******\n");
+            break;
+        }
+        if(idx==1)
+        {
+            while(1)
+			{
+            printf("对于本题有两种解法:\n");
+            printf("朴素算法:\n使用两层循环，对每种可能进行计算。但是这种方法使得时间复杂度较高，速度较慢。\n\n\n\n\n");
+            printf("数组移动法:\n为了降低时间复杂度，我们在由线段长度构成的数组中使用两个指针，一个放在开始，一个置于末尾，即定义两个整型指针 l 和 r ，\n使得l = 0；r = n - 1。\n由题意得，面积的初始值为 a[l] * (r-l)。\n为了确保面积最大，我们会找出两个指针所指向的两条线段形成的区域，持续更新最大面积，\n每次 a[l] 和 a[r] 值较小的一方，都要往数组中间移动一步。\n\n\n\n");
+            int flag1=0;
+            printf("退出观看请输入-1\n请输入:");
+            scanf("%d",&flag1);
+            if(flag1==-1)
+                break;
+            }
+        }
+        if(idx==2)
+        {
+            printf("\n\t\t\t\t注: 输入1表示开始运行该系统\n\t\t\t\t    输入-1表示结束该系统\n");
+            int flag=0;
+            while(1)
+            {
+                scanf("%d",&flag);
+                if(flag==1)
+                {
+                    int n;
+                    printf("请输入容器数量:\n");
+                    scanf("%d",&n);
+	                printf("请输入数值\n");
+	                for(int i=0;i<n;i++)
+	                {
+	                	scanf("%d",&a[i]);
+	                }
+                    fayi(n,a);
+                    printf("\n");
+                    faer(n,a);
+                    printf("\n\n继续使用请输入1,退出请输入-1\n");
+                }
+				if(flag==-1)
+					break;
+            }
+        }
+       if(idx==3)
+        {
+            printf("\n\t\t\t\t注: 输入1表示开始运行该系统\n\t\t\t\t    输入-1表示结束该系统\n");
+            while(1){
+            int flag2=0;
+            scanf("%d",&flag2);
+            if(flag2==1)
+            {
+                int k;
+                printf("请输入随机产生数据的组数:");
+                scanf("%d",&k);
+                printf("请输入每组随机产生数据的个数:");
+                int n;
+                scanf("%d",&n);
+                srand(time(NULL));
+                double sum1=0,sum2=0;
+                for(int i=0;i<k;i++)
+                {
+                    for (int j = 0; j < n; j++)
+                        {
+                            a[j]=rand()%1000;
+                        }
+                        sum1+=fayi(n,a);
+                        printf("\n");
+                        sum2+=faer(n,a);
+                        printf("\n");
+                }
+                printf("朴素算法的平均运行时间:%lfms\n",sum1/k);
+                printf("数组移动法的平均运行时间:%lfms\n",sum2/k);
+                printf("\n继续使用请输入1,退出请输入-1\n");
+            }
+            if(flag2==-1)
+                break;
+            }
+        }
+    }
+    return 0;
+}
+double fayi(int n,int a[])
+{
+    clock_t startime, endtime;
+    startime = clock();
+	int maxarea=0,maxl=0,maxr=0,length=0,width=0;
+	for(int i=0;i<n;i++)
+	{
+		for(int j=i+1;j<n;j++)
+		{
+		    if(a[i]<a[j])
+            {
+                if(maxarea<(j-i)*a[i])
+                {
+                    maxarea=(j-i)*a[i];
+                    maxl=a[i];
+                    maxr=a[j];
+                }
+            }
+            else
+            {
+                if(maxarea<(j-i)*a[j])
+                {
+                    maxarea=(j-i)*a[j];
+                    maxl=a[i];
+                    maxr=a[j];
+                }
+            }
+		}
+	}
+	if(maxl>maxr)
+		length=maxr;
+	else
+		length=maxl;
+	width=maxarea/length;
+	endtime = clock();
+	printf("朴素算法:\n");
+	printf("该容器能够最多容纳%d的水\n",maxarea);
+	printf("该容器容纳最多的水时两条边的长度%d %d\n",maxl,maxr);
+	if(length>width)
+	    printf("该容器容纳最多的水时的长和宽%d %d\n",length,width);
+	else
+		printf("该容器容纳最多的水时的长和宽%d %d\n",width,length);
+	double Total_time = (double)(endtime - startime) / CLOCKS_PER_SEC;
+	printf("该方法所需运行时间%lfms", Total_time);
+	return Total_time;
+}
+double faer(int n,int a[])
+{
+    clock_t startime, endtime;
+    startime = clock();
+	int maxarea=0,l=0,r=n-1,maxl=0,maxr=0,length=0,width=0;
+	while(r>l)
+	{
+		if(a[r]>a[l])
+		{
+			if(maxarea<(r-l)*a[l])
+			{
+				maxarea=(r-l)*a[l];
+				maxl=a[l];
+				maxr=a[r];
+			}
+			l++;
+		}
+		else
+		{
+			if(maxarea<(r-l)*a[r])
+			{
+				maxarea=(r-l)*a[r];
+				maxl=a[l];
+				maxr=a[r];
+			}
+			r--;
+		}
+	}
+	if(maxl>maxr)
+		length=maxr;
+	else
+		length=maxl;
+	width=maxarea/length;
+	endtime = clock();
+	printf("数组移动法:\n");
+	printf("该容器能够最多容纳%d的水\n",maxarea);
+	printf("该容器容纳最多的水时两条边的长度%d %d\n",maxl,maxr);
+	if(length>width)
+	    printf("该容器容纳最多的水时的长和宽%d %d\n",length,width);
+	else
+		printf("该容器容纳最多的水时的长和宽%d %d\n",width,length);
+	double Total_time = (double)(endtime - startime) / CLOCKS_PER_SEC;
+	printf("该方法所需运行时间%lfms", Total_time);
+	printf("\n");
+	return Total_time;
+}
+
+
+
